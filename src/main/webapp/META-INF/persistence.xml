@@ -1,0 +1,12 @@
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0" xsi:schemalocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+	<persistence-unit name="jsf-unit">
+		<properties>
+			<property name="hibernate-dialect" value="org.hibernate.dialect.SQLServer2012Dialect"/>
+			<property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+			<property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost;databaseName=jsfDB;encrypt=true;trustServerCertificate=true;"/>
+			<property name="javax.persistence.jdbc.user" value="sa"/>
+			<property name="javax.persistence.jdbc.password" value="rekaeil"/>
+		</properties>
+	</persistence-unit>
+</persistence>
