@@ -1,4 +1,4 @@
-package models;
+package com.hossein.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,6 +29,11 @@ public class Tasks {
 	
 	@Column(name = "COMPLETED")
 	private Boolean completed;
+
+	public Tasks(String taskBody, Boolean completed) {
+		this.taskBody = taskBody;
+		this.completed = completed;
+	}
 
 	public Long getId() {
 		return id;
