@@ -1,13 +1,14 @@
 package com.hossein.beans;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.Persistence;
+import javax.transaction.Transactional;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -18,19 +19,15 @@ import com.hossein.models.Tasks;
 @ViewScoped
 public class TasksBean {
 	
-	@PersistenceContext(unitName = "jsf-unit")
-	private EntityManager em;
+//	@PersistenceContext(unitName = "jsf-unit")
+	private EntityManager em = Persistence.createEntityManagerFactory("jsf-unit").createEntityManager();
 	
-	@Resource
 	private List<Tasks> tasks;
 	
 	private String taskBody;
 	
-	private Long taskId;
-	
 	@PostConstruct
 	public void init() {
-		this.getTasks();
 	}
 	
 	public List<Tasks> getAllTasks() {
@@ -41,18 +38,45 @@ public class TasksBean {
 		return query.list();
 	}
 	
-	public void addTask() {
+	@Transactional
+	public String addTask() {
 		Tasks task = new Tasks(this.getTaskBody(), false);
+		this.em.getTransaction().begin();
 		this.em.persist(task);
+		this.em.getTransaction().commit();
+		this.setTasks(this.getAllTasks());
+		this.setTaskBody(null);
+		return null;
 	}
 	
-	public void deleteTask() {
-		Tasks task = this.em.find(Tasks.class, taskId);
+	@Transactional
+	public String deleteTask(Tasks task) {
+		this.em.getTransaction().begin();
 		this.em.remove(task);
+		this.em.getTransaction().commit();
+		this.setTasks(this.getAllTasks());
+		this.setTaskBody(null);
+		return null;
+	}
+	
+	public String editTask(Tasks task) {
+		this.setTaskBody(task.getTaskBody());
+		this.deleteTask(task);
+		return null;
+	}
+	
+	@Transactional
+	public String completeTask(Tasks task) {
+		System.out.println("Hello Bitch");
+		this.em.getTransaction().begin();
+		task.setCompleted(!task.getCompleted());
+		this.em.merge(task);
+		this.em.getTransaction().commit();
+		return null;
 	}
 
 	public List<Tasks> getTasks() {
-		return this.getAllTasks();
+		return this.tasks;
 	}
 
 	public void setTasks(List<Tasks> tasks) {
@@ -67,12 +91,13 @@ public class TasksBean {
 		this.taskBody = taskBody;
 	}
 
-	public Long getTaskId() {
-		return taskId;
-	}
-
-	public void setTaskId(Long taskId) {
-		this.taskId = taskId;
-	}
+//	public EntityManager getEm() {
+//		EntityManagerFactory factory = Persistence.createEntityManagerFactory("jsf-unit");
+//		return factory.createEntityManager();
+//	}
+//
+//	public void setEm(EntityManager em) {
+//		this.em = em;
+//	}
 
 }

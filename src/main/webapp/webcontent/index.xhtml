@@ -1,21 +1,45 @@
-<!DOCTYPE html>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en"
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core">
 	<h:head>
 		<title>Best ToDo App In The World</title>
+		<link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
 	</h:head>
-	<f:metadata>
-		<f:viewParam name="taskBody" value="#{tasksBean.taskBody}" />
-		<f:viewParam name="taskId" value="#{tasksBean.taskId}" />
-	</f:metadata>
 	<h:body>
-		<h:form id="jsf-form" action="#{tasksBean.addTask}">
-			<h:outputLabel for="username">Enter Your Task: </h:outputLabel>
-			<h:inputTask id="taskBody" value="taskBody" required="true" />
+		<h:form id="jsf-form">
+			<h:outputLabel for="taskBody">Enter Your Task: </h:outputLabel>
+			<h:inputText id="taskBody" value="#{tasksBean.taskBody}" required="true" />
 			<br/>
-			<h:commandButton id="submit" value="Submit" />
+			<h:commandButton id="submit" value="Submit" action="#{tasksBean.addTask()}"/>
 		</h:form>
+		
+		<h:form id="table-form">
+			<h:dataTable value="#{tasksBean.tasks}" var="t">
+				<h:column>
+					<f:facet name="header">Completed</f:facet>
+					<h:selectBooleanCheckbox value="#{t.completed}" valueChangeListener="#{tasksBean.completeTask(t)}" onchange="submit()"/>
+				</h:column>
+			
+				<h:column>
+					<f:facet name="header">Task</f:facet>
+					<h:outputText styleClass="#{t.completed ? 'completed' : ''}" value="#{t.taskBody}"/>
+				</h:column>
+				
+				<h:column>
+					<f:facet name="header">Delete</f:facet>
+					<h:commandLink action="#{tasksBean.deleteTask(t)}" value="Delete"/>
+				</h:column>
+				
+				<h:column>
+					<f:facet name="header">Edit</f:facet>
+					<h:commandLink action="#{tasksBean.editTask(t)}" value="Edit"/>
+				</h:column>
+			</h:dataTable>
+		</h:form>
+		
 	</h:body>
 </html>
