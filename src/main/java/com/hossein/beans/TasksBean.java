@@ -60,8 +60,8 @@ public class TasksBean {
 	}
 	
 	public String editTask(Tasks task) {
-		this.setTaskBody(task.getTaskBody());
 		this.deleteTask(task);
+		this.setTaskBody(task.getTaskBody());
 		return null;
 	}
 	
